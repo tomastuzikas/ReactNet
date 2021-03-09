@@ -37,9 +37,10 @@ namespace API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             });
 
-            // here we added data-context as a service
+            // here we added DataContext as a service from Persistence ORM layer
             services.AddDbContext<DataContext>(opt =>
             {
+                // takes ConnectionString from appsettings.Dev_.json
                 opt.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             });
         }

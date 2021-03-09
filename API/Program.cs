@@ -18,6 +18,8 @@ namespace API
         {
             var host = CreateHostBuilder(args).Build();
             
+            // Microsoft.Extensions.DependencyInjection;
+            // using -> disposes scope after use in method
             using var scope = host.Services.CreateScope();
 
             var services = scope.ServiceProvider;

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Persistence;
+using Persistence; // goes through persistence layer, because don't have a direct link with domain
 
 namespace API.Controllers
 {
@@ -20,7 +20,7 @@ namespace API.Controllers
         public async Task<ActionResult<List<Activity>>> GetActivities(){
             return await _context.Activities.ToListAsync();
         }
-
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<Activity>> GetActivity(Guid id){
             return await _context.Activities.FindAsync(id);
