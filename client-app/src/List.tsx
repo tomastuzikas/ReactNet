@@ -5,7 +5,6 @@ import ListItem from '@material-ui/core/ListItem';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    maxWidth: 720,
     backgroundColor: theme.palette.background.paper,
   },
 }));
