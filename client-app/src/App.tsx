@@ -5,7 +5,7 @@ import ButtonAppBar from './Menu';
 import List from './List'
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
-import DashBoard from './DashBoard/Dashboard'
+import Typography from '@material-ui/core/Typography';
 
 
 function App() {
@@ -13,24 +13,25 @@ function App() {
   const [activities, setActivities] = useState([]); 
 
   useEffect(() => {
-    // axios.get('http://localhost:5000/api/activities').then(
-    //   response => {
-    //     console.log(response);
-    //     setActivities(response.data);
-    //   }
-    // )
+    axios.get('http://localhost:5000/api/activities').then(
+      response => {
+        console.log(response);
+        setActivities(response.data);
+      }
+    )
   }, []);
 
   return (
     <div className="App">
-      <Container maxWidth="sm">
+      <Container>
         <Box>
+          <Typography variant="h3" component="h2" gutterBottom>
+            h1. Heading
+          </Typography>
           <ButtonAppBar/>
           <List activities={activities}/>
         </Box>
-        <DashBoard/>
       </Container>
-      
     </div>
   );
 }
