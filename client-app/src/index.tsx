@@ -1,18 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './app/layout/styles.css';
 import reportWebVitals from './reportWebVitals';
-import App from './App';
-import DashBoard from './DashBoard/Dashboard'
+import App from './app/layout/App';
+// import DashBoard from './DashBoard/Dashboard'
 
 
 class Main extends React.Component {
   render() {
     return (
-      <div>
+      <React.Fragment>
         {/* <DashBoard /> */}
         <App />
-      </div>
+      </React.Fragment>
     );
   }
 }
