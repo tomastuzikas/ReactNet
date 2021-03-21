@@ -9,6 +9,8 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Avatar from '@material-ui/core/Avatar';
 
+import '../styles/navbar.css';
+
 interface TabPanelProps {
   children?: React.ReactNode; // optional property access ? operator -> returns undefined if not init.
   index: any;
@@ -46,11 +48,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  zzBtn: {
-    backgroundColor: "#10b80d",
+  navbar__createBtn: {
+    backgroundColor: '#10b80d',
+    color: '#FFF',
   },
   small: {
     width: theme.spacing(5),
@@ -70,7 +70,7 @@ export default function NavBar() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" className='navbar'>
         <Toolbar>
           <Box >
             <Avatar alt="logo" src="/assets/logo.png" className={classes.small} />
@@ -83,9 +83,12 @@ export default function NavBar() {
             <Tab label="Activities" {...a11yProps(0)} />
             <Tab label="Item Two" {...a11yProps(1)} />
             <Tab label="Item Three" {...a11yProps(2)} />
+            <Button size="small" variant="contained" className={classes.navbar__createBtn}>
+              <Typography color='inherit' variant='inherit'>
+                Create Activity
+              </Typography>
+          </Button>
           </Tabs>
-
-          <Button color="inherit" className={classes.zzBtn}>Create Activity</Button>
           
         </Toolbar>
       </AppBar>

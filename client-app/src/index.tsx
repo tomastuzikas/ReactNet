@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './app/layout/styles.css';
 import reportWebVitals from './reportWebVitals';
 import App from './app/layout/App';
+
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from './app/styles/theme';
+
 // import DashBoard from './DashBoard/Dashboard'
 
 
@@ -10,8 +14,9 @@ class Main extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {/* <DashBoard /> */}
-        <App />
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
       </React.Fragment>
     );
   }
