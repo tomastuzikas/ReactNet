@@ -1,13 +1,12 @@
 import React from 'react';
 import { Activity } from '../../../app/models/activity';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import {Card, CardActions, CardContent}  from '@material-ui/core/';
+import {Grid, Button, Typography, Card, CardActions, CardContent}  from '@material-ui/core/';
 
 interface Props {
     activities: Activity[];
+    selectActivity: (id: string) => void;
+    deleteActivity: (id: string) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -21,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
       },
 }));
 
-export default function ActivityList({activities} : Props){
+export default function ActivityList({activities, selectActivity, deleteActivity} : Props){
     const classes = useStyles();
 
     return (
@@ -38,7 +37,22 @@ export default function ActivityList({activities} : Props){
                             <Typography variant="body2" component="p" className={classes.Info}>{activity.category}</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small" variant="contained" color="primary">View</Button>
+                            <Button 
+                                onClick={() => selectActivity(activity.id)} 
+                                size="small" 
+                                variant="contained" 
+                                color="primary"
+                            >
+                                View
+                            </Button>
+                            <Button 
+                                onClick={() => deleteActivity(activity.id)} 
+                                size="small" 
+                                variant="contained" 
+                                color="secondary"
+                            >
+                                Delete
+                            </Button>
                         </CardActions>
                     </Card>
                 </Grid>

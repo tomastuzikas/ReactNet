@@ -4,9 +4,11 @@ import { Activity } from '../../../app/models/activity'
 
 interface Props {
     activity: Activity
+    cancelSelectActivity: () => void;
+    openForm: (id: string) => void;
 }
 
-export default function ActivityDetails({activity}: Props){
+export default function ActivityDetails({activity, cancelSelectActivity, openForm}: Props){
 
     console.log(activity);
 
@@ -27,8 +29,8 @@ export default function ActivityDetails({activity}: Props){
                 
             </CardActionArea>
             <CardActions>
-                <Button size="small" variant="contained" color="primary">Edit</Button>
-                <Button size="small" variant="contained" color="secondary">Cancel</Button>
+                <Button onClick={() => openForm(activity.id)} size="small" variant="contained" color="primary">Edit</Button>
+                <Button onClick={cancelSelectActivity}  size="small" variant="contained" color="secondary">Cancel</Button>
             </CardActions>
         </Card>
          

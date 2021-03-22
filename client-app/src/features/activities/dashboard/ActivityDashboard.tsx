@@ -8,6 +8,14 @@ import ActivityForm from '../form/ActivityForm';
 
 interface Props {
     activities: Activity[];
+    selectedActivity: Activity | undefined;
+    selectActivity: (id: string) => void;
+    cancelSelectActivity: () => void;
+    editMode: boolean;
+    openForm: (id: string) => void;
+    closeForm: () => void;
+    createOrEdit: (activity: Activity) => void;
+    deleteActivity: (id: string) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -21,7 +29,12 @@ const useStyles = makeStyles((theme) => ({
       },
 }));
 
-export default function ActvityDashboard({activities} : Props){
+export default function ActvityDashboard({activities, selectedActivity, 
+    selectActivity, cancelSelectActivity,
+    editMode,
+    openForm,
+    closeForm,
+    createOrEdit, deleteActivity} : Props){
     const classes = useStyles();
 
     return (
@@ -29,25 +42,37 @@ export default function ActvityDashboard({activities} : Props){
             <Grid container spacing={2}>
                     <Grid xs={6} item>
                         <Paper className={classes.paper}>
-                            <ActivityList activities={activities}/>
+                            <ActivityList 
+                            activities={activities} 
+                            selectActivity={selectActivity}
+                            deleteActivity={deleteActivity}
+                            />
                         </Paper>
                     </Grid>
 
                     <Grid xs={6} container direction="column" item spacing={2}> 
-                    
+                    {selectedActivity && !editMode && 
                         <Grid item> 
                             <Paper className={classes.paper}>
-                                {activities[0] && 
-                                <ActivityDetails activity={activities[0]}/>}
+                                <ActivityDetails 
+                                    activity={selectedActivity} 
+                                    cancelSelectActivity={cancelSelectActivity}
+                                    openForm={openForm}
+                                />
                             </Paper>
                         </Grid>
-
+                    }
+                    {editMode &&
                         <Grid item>
                             <Paper className={classes.paper}>
-                                <ActivityForm/>
+                                <ActivityForm
+                                    closeForm={closeForm}
+                                    activity={selectedActivity}
+                                    createOrEdit={createOrEdit}
+                                />
                             </Paper>
                         </Grid>
-
+                    }
                     </Grid>
             </Grid>
         // </div>

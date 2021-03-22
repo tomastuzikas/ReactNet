@@ -1,41 +1,41 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import Avatar from '@material-ui/core/Avatar';
+import {AppBar, Toolbar, 
+        Typography, 
+        Tabs, Tab, 
+        Box, Avatar} from '@material-ui/core/';
 
 import '../styles/navbar.css';
 
-interface TabPanelProps {
-  children?: React.ReactNode; // optional property access ? operator -> returns undefined if not init.
-  index: any;
-  value: any;
+interface Props {
+  openForm: () => void;
 }
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+// interface TabPanelProps {
+//   children?: React.ReactNode; // optional property access ? operator -> returns undefined if not init.
+//   index: any;
+//   value: any;
+// }
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+// function TabPanel(props: TabPanelProps) {
+//   const { children, value, index, ...other } = props;
+
+//   return (
+//     <div
+//       role="tabpanel"
+//       hidden={value !== index}
+//       id={`simple-tabpanel-${index}`}
+//       aria-labelledby={`simple-tab-${index}`}
+//       {...other}
+//     >
+//       {value === index && (
+//         <Box p={3}>
+//           <Typography>{children}</Typography>
+//         </Box>
+//       )}
+//     </div>
+//   );
+// }
 
 function a11yProps(index: any) {
   return {
@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
   navbar__createBtn: {
     backgroundColor: '#10b80d',
+    opacity: '1',
     color: '#FFF',
   },
   small: {
@@ -59,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NavBar() {
+export default function NavBar({openForm} : Props) {
 
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
@@ -83,16 +84,17 @@ export default function NavBar() {
             <Tab label="Activities" {...a11yProps(0)} />
             <Tab label="Item Two" {...a11yProps(1)} />
             <Tab label="Item Three" {...a11yProps(2)} />
-            <Button size="small" variant="contained" className={classes.navbar__createBtn}>
-              <Typography color='inherit' variant='inherit'>
-                Create Activity
-              </Typography>
-          </Button>
+            <Tab label="Create Activity" 
+              onClick={openForm} 
+              {...a11yProps(0)} 
+              className={classes.navbar__createBtn} 
+            />
           </Tabs>
           
         </Toolbar>
       </AppBar>
-      <TabPanel value={value} index={0}>
+
+      {/* <TabPanel value={value} index={0}>
         Item One
       </TabPanel>
       <TabPanel value={value} index={1}>
@@ -100,7 +102,7 @@ export default function NavBar() {
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three
-      </TabPanel>
+      </TabPanel> */}
 
     </div>
   );
