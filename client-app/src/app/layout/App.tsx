@@ -1,51 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import NavBar from './NavBar';
 import Container from '@material-ui/core/Container';
 import { Activity } from '../models/activity';
 import ActvityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 
-import { mockup_data } from '../models/activity_data_mockup';
+// import { mockup_data } from '../models/activity_data_mockup';
 import { v4 as uuid } from 'uuid';
+import agent from '../api/agent';
+import LoadingComponent from './LoadingComponent';
 
 function App() {
 
+  // hooks
   const [activities, setActivities] = useState<Activity[]>([]); 
   const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
 
-    const NO_SERVER = false;
-
-    if(!NO_SERVER){
-        axios.get<Activity[]>('http://localhost:5000/api/activities').then(
-        response => {
-
-          setActivities(response.data);
-          
-        }
-      )
-      .catch(function (error) {
-
-        if (!error.response) {
-            // network error
-            console.log('Error: Network Error');
-        } else {
-            console.log(error.response.data.message);
-        }
-        setActivities(mockup_data);
+    agent.Activities.list().then(
+    response => {
+      
+      let activities: Activity[] = [];
+      response.forEach(activity => {
+        activity.date = activity.date.split('T')[0];
+        activities.push(activity);
       })
-    }
-    else {
-      setActivities(mockup_data);
-    }
-    
-  }, []);
+
+      setActivities(activities);
+      setLoading(false);
+    })
+
+  }, [])
 
   function handleSelectActivity(id: string){
     setSelectedActivity(activities.find(x => x.id === id));
-
   }
 
   function handleCancelSelectActivity(){
@@ -62,18 +53,38 @@ function App() {
   }
 
   function handleCreateOrEditActivity(activity: Activity){
-    activity.id 
-    ? setActivities([...activities.filter(x => x.id !== activity.id), activity])
-    : setActivities([...activities, {...activity, id: uuid()}]);
-    setEditMode(false);
-    setSelectedActivity(activity);
+
+    setSubmitting(true);
+
+    if(activity.id) {
+      agent.Activities.update(activity).then(() => {
+        setActivities([...activities.filter(x => x.id !== activity.id), activity]);
+        setSelectedActivity(activity);
+        setEditMode(false);
+        setSubmitting(false);
+      })
+    }
+    else{
+      activity.id = uuid();
+      agent.Activities.create(activity).then(() => {
+        setActivities([...activities, activity])
+        setSelectedActivity(activity);
+        setEditMode(false);
+        setSubmitting(false);
+      })
+    }
   }
 
   function handleDeleteActivty(id: string){
-    setActivities([...activities.filter(x => x.id !== id)])
+    setSubmitting(true);
+    agent.Activities.delete(id).then(() => {
+      setActivities([...activities.filter(x => x.id !== id)]);
+      setSubmitting(false);
+    })
   }
 
-
+  if (loading) return <LoadingComponent/>
+    
   return (
     <div className="App">
       <NavBar openForm={handleFormOpen}/>
@@ -89,6 +100,7 @@ function App() {
           closeForm={handleFormClose}
           createOrEdit={handleCreateOrEditActivity}
           deleteActivity={handleDeleteActivty}
+          submitting={submitting}
         />
       </Container>
     </div>

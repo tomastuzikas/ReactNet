@@ -16,6 +16,7 @@ interface Props {
     closeForm: () => void;
     createOrEdit: (activity: Activity) => void;
     deleteActivity: (id: string) => void;
+    submitting: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -29,28 +30,34 @@ const useStyles = makeStyles((theme) => ({
       },
 }));
 
-export default function ActvityDashboard({activities, selectedActivity, 
+export default function ActvityDashboard({
+    activities, selectedActivity, 
     selectActivity, cancelSelectActivity,
-    editMode,
-    openForm,
-    closeForm,
-    createOrEdit, deleteActivity} : Props){
+    editMode, openForm,
+    closeForm, createOrEdit, 
+    deleteActivity, submitting} : Props){
+        
     const classes = useStyles();
 
     return (
-        // <div className={classes.root}>
-            <Grid container spacing={2}>
-                    <Grid xs={6} item>
-                        <Paper className={classes.paper}>
-                            <ActivityList 
+        <Grid container spacing={2}>
+
+            {/* ACTIVITIES COLUMN */}
+                <Grid xs={6} item>
+                    <Paper className={classes.paper}>
+                        <ActivityList 
                             activities={activities} 
                             selectActivity={selectActivity}
                             deleteActivity={deleteActivity}
-                            />
-                        </Paper>
-                    </Grid>
+                            submitting={submitting}
+                        />
+                    </Paper>
+                </Grid>
 
-                    <Grid xs={6} container direction="column" item spacing={2}> 
+            {/* VIEW-EDIT COLUMN */}
+                <Grid xs={6} container direction="column" item spacing={2}> 
+
+                    {/* VIEW FORM */}
                     {selectedActivity && !editMode && 
                         <Grid item> 
                             <Paper className={classes.paper}>
@@ -62,6 +69,8 @@ export default function ActvityDashboard({activities, selectedActivity,
                             </Paper>
                         </Grid>
                     }
+                    
+                    {/* EDIT FORM */}
                     {editMode &&
                         <Grid item>
                             <Paper className={classes.paper}>
@@ -69,12 +78,12 @@ export default function ActvityDashboard({activities, selectedActivity,
                                     closeForm={closeForm}
                                     activity={selectedActivity}
                                     createOrEdit={createOrEdit}
+                                    submitting={submitting}
                                 />
                             </Paper>
                         </Grid>
                     }
-                    </Grid>
-            </Grid>
-        // </div>
+                </Grid>
+        </Grid>
     )
 }

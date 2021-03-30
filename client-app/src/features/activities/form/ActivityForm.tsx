@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 import {TextField, Button, 
-        Card, CardContent } from '@material-ui/core/';
+        Card, CardContent, CircularProgress } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 import { Activity } from '../../../app/models/activity';
 
@@ -18,10 +18,14 @@ interface Props{
     activity: Activity | undefined;
     closeForm: () => void;
     createOrEdit: (activity: Activity) => void;
-
+    submitting: boolean;
 }
 
-export default function ActivityDetails({activity: selectedActivity, closeForm, createOrEdit} : Props){
+export default function ActivityDetails({
+    activity: selectedActivity, 
+    closeForm, 
+    createOrEdit, 
+    submitting} : Props){
     const classes = useStyles();
     const initialState = selectedActivity ?? {
         id: '',
@@ -35,9 +39,11 @@ export default function ActivityDetails({activity: selectedActivity, closeForm, 
 
     const [activity, setActivity] = useState(initialState);
 
-    function handleSubmit(){
-        createOrEdit(activity)
-        // console.log(activity);
+    function handleSubmit(event: any){
+        if(event){
+            event.preventDefault()
+        }
+        createOrEdit(activity);
     }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>){
@@ -48,19 +54,17 @@ export default function ActivityDetails({activity: selectedActivity, closeForm, 
     return (
         <Card variant="outlined" className={classes.root} style={{outlineColor: 'purple', outlineStyle: 'solid'}}>
             <CardContent>
-                <form onSubmit={handleSubmit} noValidate autoComplete="off">
-                    <TextField 
+                <form onSubmit={handleSubmit} autoComplete="off">
+                    <TextField name="title"
                         value={activity.title}
-                        name="title"
                         onChange={handleInputChange}
                         label="Title"
                         margin='dense'
                         variant='outlined'
                         fullWidth
                     />
-                    <TextField 
+                    <TextField name="description"
                         value={activity.description}
-                        name="description"
                         onChange={handleInputChange}
                         label="Description" 
                         multiline 
@@ -69,57 +73,57 @@ export default function ActivityDetails({activity: selectedActivity, closeForm, 
                         variant='outlined'
                         fullWidth
                     />
-                    <TextField 
+                    <TextField name="category"
                         value={activity.category}
-                        name="category"
                         onChange={handleInputChange}
                         label="Category" 
                         margin='dense'
                         variant='outlined'
                         fullWidth 
                     />
-                    <TextField 
+                    <TextField name="date"
                         value={activity.date}
-                        name="date"
                         onChange={handleInputChange}
-                        label="Date" 
+                        type='date'
                         margin='dense'
                         variant='outlined'
                         fullWidth
                     />
-                    <TextField 
+                    <TextField name="city"
                         value={activity.city}
-                        name="city"
                         onChange={handleInputChange}
                         label="City" 
                         margin='dense'
                         variant='outlined'
                         fullWidth
                     />
-                    <TextField 
+                    <TextField name="venue"
                         value={activity.venue}
-                        name="venue"
                         onChange={handleInputChange}
                         label="Venue" 
                         margin='dense'
                         variant='outlined'
                         fullWidth
                     />
-                    <Button className={classes.submit} 
-                        type="submit" 
-                        variant="contained" 
-                        color="primary">
-                    Submit
+
+                    <Button 
+                        className={classes.submit} 
+                        variant="contained"
+                        disabled={submitting}
+                        type="submit"
+                        color="primary"
+                    >
+                        {submitting && <CircularProgress size={22} />}
+                        {!submitting && 'Submit'}
                     </Button>
                     <Button className={classes.submit} 
                         onClick={closeForm} 
                         variant="contained" 
                         color="secondary">
-                    Cancel
+                        Cancel
                     </Button>
                 </form>
             </CardContent>
-            
 
         </Card>
     )

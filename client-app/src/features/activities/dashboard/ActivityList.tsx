@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { SyntheticEvent, useState } from 'react';
 import { Activity } from '../../../app/models/activity';
 import { makeStyles } from '@material-ui/core/styles';
-import {Grid, Button, Typography, Card, CardActions, CardContent}  from '@material-ui/core/';
+import {Grid, Button, Typography, Card, CardActions, CardContent, CircularProgress}  from '@material-ui/core/';
+
 
 interface Props {
     activities: Activity[];
     selectActivity: (id: string) => void;
     deleteActivity: (id: string) => void;
+    submitting: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -20,8 +22,18 @@ const useStyles = makeStyles((theme) => ({
       },
 }));
 
-export default function ActivityList({activities, selectActivity, deleteActivity} : Props){
+export default function ActivityList({
+    activities, selectActivity, 
+    deleteActivity, submitting} : Props){
+
+    const [target, setTarget] = useState('');
+
     const classes = useStyles();
+
+    function handleActivityDelete(e: SyntheticEvent<HTMLButtonElement>, id: string){
+        setTarget(e.currentTarget.name);
+        deleteActivity(id);
+    }
 
     return (
         <Grid container direction="column">
@@ -37,6 +49,7 @@ export default function ActivityList({activities, selectActivity, deleteActivity
                             <Typography variant="body2" component="p" className={classes.Info}>{activity.category}</Typography>
                         </CardContent>
                         <CardActions>
+
                             <Button 
                                 onClick={() => selectActivity(activity.id)} 
                                 size="small" 
@@ -45,14 +58,23 @@ export default function ActivityList({activities, selectActivity, deleteActivity
                             >
                                 View
                             </Button>
+
                             <Button 
-                                onClick={() => deleteActivity(activity.id)} 
+                                name={activity.id}
+                                onClick={(e) => handleActivityDelete(e, activity.id)} 
                                 size="small" 
                                 variant="contained" 
                                 color="secondary"
-                            >
-                                Delete
+                                >
+                                {
+                                    submitting && 
+                                    target === activity.id && 
+                                    <CircularProgress size={22} />}
+
+                                {(!submitting || target !== activity.id) && ('Delete')} 
+                                   
                             </Button>
+                           
                         </CardActions>
                     </Card>
                 </Grid>

@@ -2,6 +2,7 @@
 
 # .NET
 ## Start project - CLI
+cd API/
 dotnet watch run
 
 # React
