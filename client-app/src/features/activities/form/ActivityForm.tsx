@@ -2,7 +2,8 @@ import React, { ChangeEvent, useState } from 'react';
 import {TextField, Button, 
         Card, CardContent, CircularProgress } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
-import { Activity } from '../../../app/models/activity';
+import { useStore } from '../../../app/stores/store';
+import { observer } from 'mobx-react-lite';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -14,19 +15,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-interface Props{
-    activity: Activity | undefined;
-    closeForm: () => void;
-    createOrEdit: (activity: Activity) => void;
-    submitting: boolean;
-}
+export default observer (function ActivityDetails(){
 
-export default function ActivityDetails({
-    activity: selectedActivity, 
-    closeForm, 
-    createOrEdit, 
-    submitting} : Props){
+    const {activityStore} = useStore();
+    const {selectedActivity, closeForm, createActivity, updateActivity, loading} = activityStore;
+
     const classes = useStyles();
+
     const initialState = selectedActivity ?? {
         id: '',
         title: '', 
@@ -43,7 +38,7 @@ export default function ActivityDetails({
         if(event){
             event.preventDefault()
         }
-        createOrEdit(activity);
+        activity.id ? updateActivity(activity) : createActivity(activity);
     }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>){
@@ -109,12 +104,12 @@ export default function ActivityDetails({
                     <Button 
                         className={classes.submit} 
                         variant="contained"
-                        disabled={submitting}
+                        disabled={loading}
                         type="submit"
                         color="primary"
                     >
-                        {submitting && <CircularProgress size={22} />}
-                        {!submitting && 'Submit'}
+                        {loading && <CircularProgress size={22} />}
+                        {!loading && 'Submit'}
                     </Button>
                     <Button className={classes.submit} 
                         onClick={closeForm} 
@@ -128,4 +123,4 @@ export default function ActivityDetails({
         </Card>
     )
 
-}
+});

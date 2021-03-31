@@ -1,16 +1,14 @@
 import React from 'react';
 import {Card, CardMedia, CardActionArea, CardActions, CardContent, Typography, Button}  from '@material-ui/core/';
-import { Activity } from '../../../app/models/activity'
+import { useStore } from '../../../app/stores/store';
 
-interface Props {
-    activity: Activity
-    cancelSelectActivity: () => void;
-    openForm: (id: string) => void;
-}
+export default function ActivityDetails(){
 
-export default function ActivityDetails({activity, cancelSelectActivity, openForm}: Props){
+    // console.log(activity);
+    const {activityStore} = useStore();
+    const {selectedActivity: activity, openForm, cancelSelectedActivity} = activityStore;
 
-    console.log(activity);
+    if (!activity) return <></>;
 
     return (
 
@@ -30,7 +28,7 @@ export default function ActivityDetails({activity, cancelSelectActivity, openFor
             </CardActionArea>
             <CardActions>
                 <Button onClick={() => openForm(activity.id)} size="small" variant="contained" color="primary">Edit</Button>
-                <Button onClick={cancelSelectActivity}  size="small" variant="contained" color="secondary">Cancel</Button>
+                <Button onClick={cancelSelectedActivity}  size="small" variant="contained" color="secondary">Cancel</Button>
             </CardActions>
         </Card>
          

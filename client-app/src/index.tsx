@@ -6,6 +6,7 @@ import App from './app/layout/App';
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './app/styles/theme';
+import { store, StoreContext } from './app/stores/store';
 
 // import DashBoard from './DashBoard/Dashboard'
 
@@ -13,11 +14,11 @@ import theme from './app/styles/theme';
 class Main extends React.Component {
   render() {
     return (
-      <React.Fragment>
+      <StoreContext.Provider value={store}>
         <ThemeProvider theme={theme}>
           <App />
         </ThemeProvider>
-      </React.Fragment>
+      </StoreContext.Provider>
     );
   }
 }

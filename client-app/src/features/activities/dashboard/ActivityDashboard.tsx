@@ -1,23 +1,11 @@
 import React from 'react';
 import {Grid, Paper} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Activity } from '../../../app/models/activity';
 import ActivityList from './ActivityList';
 import ActivityDetails from '../details/ActivityDetails';
 import ActivityForm from '../form/ActivityForm';
-
-interface Props {
-    activities: Activity[];
-    selectedActivity: Activity | undefined;
-    selectActivity: (id: string) => void;
-    cancelSelectActivity: () => void;
-    editMode: boolean;
-    openForm: (id: string) => void;
-    closeForm: () => void;
-    createOrEdit: (activity: Activity) => void;
-    deleteActivity: (id: string) => void;
-    submitting: boolean;
-}
+import { useStore } from '../../../app/stores/store';
+import { observer } from 'mobx-react-lite';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -30,14 +18,14 @@ const useStyles = makeStyles((theme) => ({
       },
 }));
 
-export default function ActvityDashboard({
-    activities, selectedActivity, 
-    selectActivity, cancelSelectActivity,
-    editMode, openForm,
-    closeForm, createOrEdit, 
-    deleteActivity, submitting} : Props){
+export default observer(function ActvityDashboard(){
         
+    const {activityStore} = useStore();
+    const {selectedActivity, editMode} = activityStore; 
+    
     const classes = useStyles();
+
+   
 
     return (
         <Grid container spacing={2}>
@@ -45,12 +33,7 @@ export default function ActvityDashboard({
             {/* ACTIVITIES COLUMN */}
                 <Grid xs={6} item>
                     <Paper className={classes.paper}>
-                        <ActivityList 
-                            activities={activities} 
-                            selectActivity={selectActivity}
-                            deleteActivity={deleteActivity}
-                            submitting={submitting}
-                        />
+                        <ActivityList />
                     </Paper>
                 </Grid>
 
@@ -61,11 +44,7 @@ export default function ActvityDashboard({
                     {selectedActivity && !editMode && 
                         <Grid item> 
                             <Paper className={classes.paper}>
-                                <ActivityDetails 
-                                    activity={selectedActivity} 
-                                    cancelSelectActivity={cancelSelectActivity}
-                                    openForm={openForm}
-                                />
+                                <ActivityDetails/>
                             </Paper>
                         </Grid>
                     }
@@ -74,16 +53,11 @@ export default function ActvityDashboard({
                     {editMode &&
                         <Grid item>
                             <Paper className={classes.paper}>
-                                <ActivityForm
-                                    closeForm={closeForm}
-                                    activity={selectedActivity}
-                                    createOrEdit={createOrEdit}
-                                    submitting={submitting}
-                                />
+                                <ActivityForm />
                             </Paper>
                         </Grid>
                     }
                 </Grid>
         </Grid>
     )
-}
+});

@@ -2,14 +2,9 @@ import React, { SyntheticEvent, useState } from 'react';
 import { Activity } from '../../../app/models/activity';
 import { makeStyles } from '@material-ui/core/styles';
 import {Grid, Button, Typography, Card, CardActions, CardContent, CircularProgress}  from '@material-ui/core/';
+import { useStore } from '../../../app/stores/store';
+import { observer } from 'mobx-react-lite';
 
-
-interface Props {
-    activities: Activity[];
-    selectActivity: (id: string) => void;
-    deleteActivity: (id: string) => void;
-    submitting: boolean;
-}
 
 const useStyles = makeStyles((theme) => ({
     Info: {
@@ -22,13 +17,14 @@ const useStyles = makeStyles((theme) => ({
       },
 }));
 
-export default function ActivityList({
-    activities, selectActivity, 
-    deleteActivity, submitting} : Props){
+export default observer(function ActivityList(){
 
+    const {activityStore} = useStore();
+    const {deleteActivity, activitiesByDate, loading} = activityStore;
+    
     const [target, setTarget] = useState('');
-
     const classes = useStyles();
+
 
     function handleActivityDelete(e: SyntheticEvent<HTMLButtonElement>, id: string){
         setTarget(e.currentTarget.name);
@@ -37,7 +33,7 @@ export default function ActivityList({
 
     return (
         <Grid container direction="column">
-            {activities.map((activity: Activity) => (
+            {activitiesByDate.map((activity: Activity) => (
                 
                 <Grid item key={activity.id} style={{outlineColor: 'green', outlineStyle: 'solid'}}>
                     <Card variant="outlined" style={{outlineColor: 'purple', outlineStyle: 'solid'}}>
@@ -51,7 +47,7 @@ export default function ActivityList({
                         <CardActions>
 
                             <Button 
-                                onClick={() => selectActivity(activity.id)} 
+                                onClick={() => activityStore.selectActivity(activity.id)} 
                                 size="small" 
                                 variant="contained" 
                                 color="primary"
@@ -67,11 +63,11 @@ export default function ActivityList({
                                 color="secondary"
                                 >
                                 {
-                                    submitting && 
+                                    loading && 
                                     target === activity.id && 
                                     <CircularProgress size={22} />}
 
-                                {(!submitting || target !== activity.id) && ('Delete')} 
+                                {(!loading || target !== activity.id) && ('Delete')} 
                                    
                             </Button>
                            
@@ -81,4 +77,4 @@ export default function ActivityList({
                 ))}
         </Grid>
     )
-}
+});

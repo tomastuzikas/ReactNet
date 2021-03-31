@@ -6,36 +6,8 @@ import {AppBar, Toolbar,
         Box, Avatar} from '@material-ui/core/';
 
 import '../styles/navbar.css';
+import { useStore } from '../stores/store';
 
-interface Props {
-  openForm: () => void;
-}
-
-// interface TabPanelProps {
-//   children?: React.ReactNode; // optional property access ? operator -> returns undefined if not init.
-//   index: any;
-//   value: any;
-// }
-
-// function TabPanel(props: TabPanelProps) {
-//   const { children, value, index, ...other } = props;
-
-//   return (
-//     <div
-//       role="tabpanel"
-//       hidden={value !== index}
-//       id={`simple-tabpanel-${index}`}
-//       aria-labelledby={`simple-tab-${index}`}
-//       {...other}
-//     >
-//       {value === index && (
-//         <Box p={3}>
-//           <Typography>{children}</Typography>
-//         </Box>
-//       )}
-//     </div>
-//   );
-// }
 
 function a11yProps(index: any) {
   return {
@@ -60,7 +32,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NavBar({openForm} : Props) {
+export default function NavBar() {
+
+  const {activityStore} = useStore();
 
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
@@ -85,7 +59,7 @@ export default function NavBar({openForm} : Props) {
             <Tab label="Item Two" {...a11yProps(1)} />
             <Tab label="Item Three" {...a11yProps(2)} />
             <Tab label="Create Activity" 
-              onClick={openForm} 
+              onClick={() => activityStore.openForm()} 
               {...a11yProps(0)} 
               className={classes.navbar__createBtn} 
             />
