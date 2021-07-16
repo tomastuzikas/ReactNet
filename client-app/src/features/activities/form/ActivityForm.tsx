@@ -1,9 +1,12 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import {TextField, Button, 
         Card, CardContent, CircularProgress } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 import { useStore } from '../../../app/stores/store';
 import { observer } from 'mobx-react-lite';
+import { useHistory, useParams } from 'react-router';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
+import { v4 as uuid } from 'uuid';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,13 +19,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default observer (function ActivityDetails(){
-
+    const history = useHistory();
     const {activityStore} = useStore();
-    const {selectedActivity, closeForm, createActivity, updateActivity, loading} = activityStore;
+    const {createActivity, updateActivity, loading, 
+        loadActivity, loadingInitial} = activityStore;
+    const {id} = useParams<{id: string}>();
 
     const classes = useStyles();
 
-    const initialState = selectedActivity ?? {
+    const [activity, setActivity] = useState({
         id: '',
         title: '', 
         category: '',
@@ -30,15 +35,29 @@ export default observer (function ActivityDetails(){
         date: '',
         city: '',
         venue: ''
-    }
+    });
 
-    const [activity, setActivity] = useState(initialState);
+    useEffect(() => {
+        if (id) loadActivity(id).then(activity => setActivity(activity!)) 
+    }, [id, loadActivity]);
 
     function handleSubmit(event: any){
-        if(event){
-            event.preventDefault()
+        if(event) {
+            event.preventDefault() // this is important to be able load full logical before post submit
         }
-        activity.id ? updateActivity(activity) : createActivity(activity);
+        
+        if (activity.id.length === 0) {
+            let newActivity = {
+                ...activity,
+                id: uuid()
+            };
+            createActivity(newActivity).then(
+                () => history.push(`/activities/${newActivity.id}`))
+        } else {
+            updateActivity(activity).then(
+                () => history.push(`/activities/${activity.id}`))
+        }
+        
     }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>){
@@ -46,8 +65,10 @@ export default observer (function ActivityDetails(){
         setActivity({...activity, [name]: value});
     }
 
+    if(loadingInitial) return <LoadingComponent/>;
+
     return (
-        <Card variant="outlined" className={classes.root} style={{outlineColor: 'purple', outlineStyle: 'solid'}}>
+        <Card variant="outlined" className={classes.root} style={{outline: '2px ridge rgba(227, 176, 7, .6)'}}>
             <CardContent>
                 <form onSubmit={handleSubmit} autoComplete="off">
                     <TextField name="title"
@@ -111,8 +132,7 @@ export default observer (function ActivityDetails(){
                         {loading && <CircularProgress size={22} />}
                         {!loading && 'Submit'}
                     </Button>
-                    <Button className={classes.submit} 
-                        onClick={closeForm} 
+                    <Button className={classes.submit}
                         variant="contained" 
                         color="secondary">
                         Cancel

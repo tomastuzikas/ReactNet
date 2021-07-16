@@ -7,6 +7,7 @@ import App from './app/layout/App';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './app/styles/theme';
 import { store, StoreContext } from './app/stores/store';
+import { BrowserRouter } from 'react-router-dom';
 
 // import DashBoard from './DashBoard/Dashboard'
 
@@ -16,7 +17,9 @@ class Main extends React.Component {
     return (
       <StoreContext.Provider value={store}>
         <ThemeProvider theme={theme}>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </ThemeProvider>
       </StoreContext.Provider>
     );

@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import {Grid, Button, Typography, Card, CardActions, CardContent, CircularProgress}  from '@material-ui/core/';
 import { useStore } from '../../../app/stores/store';
 import { observer } from 'mobx-react-lite';
+import { Link } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,8 +36,8 @@ export default observer(function ActivityList(){
         <Grid container direction="column">
             {activitiesByDate.map((activity: Activity) => (
                 
-                <Grid item key={activity.id} style={{outlineColor: 'green', outlineStyle: 'solid'}}>
-                    <Card variant="outlined" style={{outlineColor: 'purple', outlineStyle: 'solid'}}>
+                <Grid item key={activity.id} style={{outline: '2px ridge rgba(5, 171, 52, .6)'}}>
+                    <Card variant="outlined" style={{outline: '2px ridge rgba(138, 5, 171, .6)'}}>
                         <CardContent>
                             <Typography gutterBottom variant="h6" component="h2">{activity.title}</Typography>
                             <Typography variant="caption" color="textSecondary" gutterBottom>{activity.date}</Typography>
@@ -47,7 +48,7 @@ export default observer(function ActivityList(){
                         <CardActions>
 
                             <Button 
-                                onClick={() => activityStore.selectActivity(activity.id)} 
+                                component={Link} to={`/activities/${activity.id}`} 
                                 size="small" 
                                 variant="contained" 
                                 color="primary"

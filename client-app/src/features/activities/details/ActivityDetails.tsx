@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Card, CardMedia, CardActionArea, CardActions, CardContent, Typography, Button}  from '@material-ui/core/';
 import { useStore } from '../../../app/stores/store';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
+import { useParams } from 'react-router';
+import { observer } from 'mobx-react-lite';
+import { Link } from 'react-router-dom';
 
-export default function ActivityDetails(){
+export default observer( function ActivityDetails(){
 
-    // console.log(activity);
     const {activityStore} = useStore();
-    const {selectedActivity: activity, openForm, cancelSelectedActivity} = activityStore;
+    const {selectedActivity: activity, loadActivity, loadingInitial} = activityStore;
+    const {id} = useParams<{id: string}>();
 
-    if (!activity) return <></>;
+    useEffect(()=>{
+        if(id) loadActivity(id);
+    }, [id, loadActivity]);
+
+
+    if (loadingInitial || !activity) return <LoadingComponent/>;
 
     return (
 
-        <Card variant="outlined" style={{outlineColor: 'purple', outlineStyle: 'solid'}}>
+        <Card variant="outlined" style={{outline: '2px ridge rgba(171, 5, 66, .6)'}}>
             <CardActionArea>
                 <CardMedia
                     style={{height: 140}}
@@ -27,10 +36,10 @@ export default function ActivityDetails(){
                 
             </CardActionArea>
             <CardActions>
-                <Button onClick={() => openForm(activity.id)} size="small" variant="contained" color="primary">Edit</Button>
-                <Button onClick={cancelSelectedActivity}  size="small" variant="contained" color="secondary">Cancel</Button>
+                <Button component={Link} to={`/manage/${activity.id}`} size="small" variant="contained" color="primary">Edit</Button>
+                <Button component={Link} to={'/activities'} size="small" variant="contained" color="secondary">Cancel</Button>
             </CardActions>
         </Card>
          
     )
-}
+});
